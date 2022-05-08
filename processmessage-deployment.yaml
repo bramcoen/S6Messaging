@@ -24,7 +24,7 @@ spec:
         io.kompose.service: processmessage
     spec:
       containers:
-        - image: processmessage
+        - image: bramco/brams6messaging:main
           name: processmessage
           ports:
             - containerPort: 443
