@@ -82,7 +82,7 @@ jobs:
       run: doctl kubernetes cluster kubeconfig save --expiry-seconds 600 ${{ secrets.DIGITALOCEAN_CLUSTER }}
 
     - name: Deploy to DigitalOcean Kubernetes
-      run: kubectl apply -f $GITHUB_WORKSPACE
+      run: kubectl apply -f $GITHUB_WORKSPACE --validate=false #Flag is needed for validation of other yaml files in folder
 
     - name: Verify deployment
       run: kubectl rollout status ${{ secrets.Image_Name }}
