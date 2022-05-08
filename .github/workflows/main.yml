@@ -75,6 +75,8 @@ jobs:
       with:
         token: ${{ secrets.DIGITALOCEAN_ACCESS_TOKEN }}
 
+    - name: Update deployment file
+      run: rm $GITHUB_WORKSPACE/docker-compose.yml || true
     #- name: Update deployment file
     #  run: sed -i 's|<IMAGE>|'${{ secrets.Image_Name }}':'${TAG}'|' $GITHUB_WORKSPACE/config/deployment.yml
 
@@ -82,7 +84,7 @@ jobs:
       run: doctl kubernetes cluster kubeconfig save --expiry-seconds 600 ${{ secrets.DIGITALOCEAN_CLUSTER }}
 
     - name: Deploy to DigitalOcean Kubernetes
-      run: kubectl apply -f $GITHUB_WORKSPACE --validate=false #Flag is needed for validation of other yaml files in folder
+      run: kubectl apply -f $GITHUB_WORKSPACE
 
     - name: Verify deployment
       run: kubectl rollout status ${{ secrets.Image_Name }}
