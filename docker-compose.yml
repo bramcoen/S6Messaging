@@ -1,0 +1,32 @@
+version: "2"
+services:
+  processmessage:
+    build: .
+    depends_on:
+      - rabbitmq
+      - cassandra
+    ports:
+      - 443:443
+      - 80:80
+    restart: always
+  rabbitmq:
+    image: rabbitmq:3-management
+    hostname: rabbit
+    volumes:
+      - ./rabbitmq/etc/definitions.json:/etc/rabbitmq/definitions.json
+      - ./rabbitmq/etc/rabbitmq.conf:/etc/rabbitmq/rabbitmq.conf
+      - ./rabbitmq/data:/var/lib/rabbitmq/mnesia/rabbit@my-rabbit
+      - ./rabbitmq/logs:/var/log/rabbitmq/log
+    ports:
+      - 5672:5672
+      - 15672:15672
+  cassandra:
+    image: cassandra
+    ports:
+      - 9042:9042
+    volumes:
+      - ~/apps/cassandra:/var/lib/cassandra
+      - ./db-schema:/docker-entrypoint-initdb.d/
+    environment:
+      - CASSANDRA_CLUSTER_NAME=citizix
+      - CASSANDRA_KEYSPACE=Messaging
