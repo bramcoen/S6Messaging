@@ -75,14 +75,14 @@ jobs:
       with:
         token: ${{ secrets.DIGITALOCEAN_ACCESS_TOKEN }}
 
-    - name: Update deployment file
-      run: sed -i 's|<IMAGE>|'${{ secrets.Image_Name }}':'${TAG}'|' $GITHUB_WORKSPACE/config/deployment.yml
+    #- name: Update deployment file
+    #  run: sed -i 's|<IMAGE>|'${{ secrets.Image_Name }}':'${TAG}'|' $GITHUB_WORKSPACE/config/deployment.yml
 
     - name: Save DigitalOcean kubeconfig with short-lived credentials
-      run: doctl kubernetes cluster kubeconfig save --expiry-seconds 600 actions-example-k8s-1-18
+      run: doctl kubernetes cluster kubeconfig save --expiry-seconds 600 ${{ secrets.DIGITALOCEAN_CLUSTER }}
 
     - name: Deploy to DigitalOcean Kubernetes
-      run: kubectl apply -f $GITHUB_WORKSPACE/config/deployment.yml
+      run: kubectl apply -f $GITHUB_WORKSPACE
 
     - name: Verify deployment
       run: kubectl rollout status ${{ secrets.Image_Name }}
