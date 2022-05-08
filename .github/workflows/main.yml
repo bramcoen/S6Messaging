@@ -86,5 +86,5 @@ jobs:
     - name: Deploy to DigitalOcean Kubernetes
       run: kubectl apply -f $GITHUB_WORKSPACE
 
-    - name: Verify deployment
-      run: kubectl rollout status ${{ secrets.Image_Name }}
+    #- name: Verify deployment
+   # run: kubectl rollout status ${{ secrets.Image_Name }}
