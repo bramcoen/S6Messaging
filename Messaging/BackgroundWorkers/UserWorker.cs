@@ -7,7 +7,6 @@ namespace Messaging
 {
     public class UserWorker : BackgroundService
     {
-        private ConnectionFactory _connectionFactory;
         private IConnection _connection;
         private IModel _channel;
         private readonly ILogger _logger;
@@ -42,7 +41,7 @@ namespace Messaging
         }
         public override Task StartAsync(CancellationToken cancellationToken)
         {
-            _connectionFactory = new ConnectionFactory()
+            ConnectionFactory _connectionFactory = new ConnectionFactory()
             {
                 HostName = _configuration.GetValue<string>("RabbitMQHostname"),
                 UserName = _configuration.GetValue<string>("RabbitMQUsername"),
