@@ -1,7 +1,7 @@
 version: "2"
 services:
   processmessage:
-    image: bramco/brams6messaging:main
+    build: .
     depends_on:
       - rabbitmq
       - cassandra
@@ -12,8 +12,6 @@ services:
   rabbitmq:
     image: rabbitmq:3-management
     hostname: rabbit
-    labels:
-        kompose.volume.storage-class-name: do-block-storage
     volumes:
       - ./rabbitmq/etc/definitions.json:/etc/rabbitmq/definitions.json
       - ./rabbitmq/etc/rabbitmq.conf:/etc/rabbitmq/rabbitmq.conf
@@ -26,11 +24,13 @@ services:
     image: cassandra
     ports:
       - 9042:9042
-    labels:
-        kompose.volume.storage-class-name: do-block-storage
     volumes:
       - ~/apps/cassandra:/var/lib/cassandra
       - ./db-schema:/docker-entrypoint-initdb.d/
     environment:
       - CASSANDRA_CLUSTER_NAME=citizix
       - CASSANDRA_KEYSPACE=Messaging
+    deploy:
+      resources:
+        limits:
+          memory: 4096M

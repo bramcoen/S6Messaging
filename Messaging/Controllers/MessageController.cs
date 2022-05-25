@@ -1,6 +1,7 @@
-using DataInterfaces;
+using StorageInterfaces;
 using Messaging;
 using Microsoft.AspNetCore.Mvc;
+using System;
 
 namespace WebApplication2.Controllers
 {
@@ -8,11 +9,6 @@ namespace WebApplication2.Controllers
     [Route("[controller]")]
     public class MessageController : ControllerBase
     {
-        private static readonly string[] Summaries = new[]
-        {
-        "Freezing", "Bracing", "Chilly", "Cool", "Mild", "Warm", "Balmy", "Hot", "Sweltering", "Scorching"
-    };
-
         private readonly ILogger<MessageController> _logger;
         private readonly IMessageStorage _messageStorage;
 
@@ -23,9 +19,9 @@ namespace WebApplication2.Controllers
         }
 
         [HttpGet]
-        public async Task<IEnumerable<Message>> GetAsync()
+        public async Task<IEnumerable<Message>> GetAsync(string userid, int amount,int page)
         {
-            return await _messageStorage.GetAllMessages("");
+            return await _messageStorage.GetAllMessages(userid, amount,page);
         }
     }
 }

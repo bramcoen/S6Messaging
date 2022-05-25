@@ -1,0 +1,55 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  annotations:
+    kompose.cmd: kompose.exe convert
+    kompose.version: 1.26.1 (a9d05d509)
+  labels:
+    io.kompose.service: messageservice
+  name: messageservice
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      io.kompose.service: messageservice
+  strategy:
+    type: RollingUpdate
+  template:
+    metadata:
+      annotations:
+        kompose.cmd: kompose.exe convert
+        kompose.version: 1.26.1 (a9d05d509)
+      labels:
+        io.kompose.service: messageservice
+    spec:
+      containers:
+        - image: bramco/brams6userservice
+          name: messageservice
+          env:
+            - name: RabbitMQHostname
+              valueFrom:
+                secretKeyRef:
+                  name: messagingsecret 
+                  key: RabbitMQHostname
+            - name: MongoDBConnectionString
+              valueFrom:
+                secretKeyRef:
+                  name: messagingsecret 
+                  key: MongoDBConnectionString            
+            - name: RabbitMQUsername
+              valueFrom:
+                secretKeyRef:
+                  name: messagingsecret 
+                  key: RabbitMQUsername
+            - name: RabbitMQPassword
+              valueFrom:
+                secretKeyRef:
+                  name: messagingsecret 
+                  key: RabbitMQPassword
+          imagePullPolicy: Always
+          ports:
+            - containerPort: 80
+          resources: {}
+      hostname: userservice
+      restartPolicy: Always
+status: {}

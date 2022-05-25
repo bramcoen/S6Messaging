@@ -1,4 +1,5 @@
-﻿using DataInterfaces;
+﻿using StorageInterfaces;
+using Messaging.Services;
 using RabbitMQ.Client;
 using RabbitMQ.Client.Events;
 
@@ -11,11 +12,15 @@ namespace Messaging
         IModel _channel;
         ILogger _logger;
         IMessageStorage _messageStorage;
+        RabbitMQService _rabbitMQService;
+        IConfiguration _configuration;
 
-        public NewMessageWorker(ILogger<NewMessageWorker> logger, IMessageStorage messageStorage)
+        public NewMessageWorker(ILogger<NewMessageWorker> logger, IMessageStorage messageStorage, RabbitMQService rabbitMQService, IConfiguration configuration)
         {
             _logger = logger;
             _messageStorage = messageStorage;
+            _rabbitMQService = rabbitMQService;
+            _configuration = configuration;
         }
 
         protected override Task ExecuteAsync(CancellationToken stoppingToken)
@@ -29,22 +34,22 @@ namespace Messaging
                     var message = System.Text.Json.JsonSerializer.Deserialize<Message>(body);
                     if (message != null) await _messageStorage.SaveMessageAsync(message);
                     _logger.LogInformation(" [x] Received {0}", message!.Text);
+                    _channel.BasicAck(deliveryTag: ea.DeliveryTag, multiple: false);
                 };
 
             _channel.BasicConsume(queue: "message/new",
-                                 autoAck: true,
+                                 autoAck: false,
                                  consumer: consumer);
 
             return Task.CompletedTask;
         }
         public override Task StartAsync(CancellationToken cancellationToken)
         {
-            _connectionFactory = new ConnectionFactory
-            {
-                HostName = "rabbit",
+            _connectionFactory = new ConnectionFactory() { HostName = 
+                _configuration.GetValue<string>("RabbitMQHostname"), 
+                UserName = _configuration.GetValue<string>("RabbitMQUsername"), 
+                Password = _configuration.GetValue<string>("RabbitMQPassword") ,
                 Port = 5672,
-                UserName = "guest",
-                Password = "guest",
                 DispatchConsumersAsync = true
             };
             _connection = _connectionFactory.CreateConnection();
@@ -54,8 +59,8 @@ namespace Messaging
                                      exclusive: false,
                                      autoDelete: false,
                                      arguments: null);
-            _channel.BasicQos(0, 1, false);
-            _logger.LogInformation($"Queue [hello] is waiting for messages.");
+            _channel.BasicQos(0, 30,false);
+            _logger.LogInformation($"Queue [message/new] is waiting for messages.");
 
             return base.StartAsync(cancellationToken);
         }
