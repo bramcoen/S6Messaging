@@ -7,17 +7,18 @@ namespace Messaging
 {
     public class UserWorker : BackgroundService
     {
-        ConnectionFactory _connectionFactory;
-        IConnection _connection;
-        IModel _channel;
-        ILogger _logger;
-        IUserStorage _userStorage;
+        private ConnectionFactory _connectionFactory;
+        private IConnection _connection;
+        private IModel _channel;
+        private readonly ILogger _logger;
+        private readonly IUserStorage _userStorage;
+        private readonly IConfiguration _configuration;
 
-        public UserWorker(ILogger<UserWorker> logger, IUserStorage userStorage)
+        public UserWorker(ILogger<UserWorker> logger, IUserStorage userStorage, IConfiguration configuration)
         {
             _logger = logger;
             _userStorage = userStorage;
-
+            _configuration = configuration;
         }
 
         protected override Task ExecuteAsync(CancellationToken stoppingToken)
@@ -41,12 +42,12 @@ namespace Messaging
         }
         public override Task StartAsync(CancellationToken cancellationToken)
         {
-            _connectionFactory = new ConnectionFactory
+            _connectionFactory = new ConnectionFactory()
             {
-                HostName = "localhost",
+                HostName = _configuration.GetValue<string>("RabbitMQHostname"),
+                UserName = _configuration.GetValue<string>("RabbitMQUsername"),
+                Password = _configuration.GetValue<string>("RabbitMQPassword"),
                 Port = 5672,
-                UserName = "guest",
-                Password = "guest",
                 DispatchConsumersAsync = true
             };
             _connection = _connectionFactory.CreateConnection();
@@ -56,7 +57,7 @@ namespace Messaging
                                      exclusive: false,
                                      autoDelete: false,
                                      arguments: null);
-            _channel.BasicQos(0, 30,false);
+            _channel.BasicQos(0, 30, false);
             _logger.LogInformation($"Queue [hello] is waiting for messages.");
 
             return base.StartAsync(cancellationToken);

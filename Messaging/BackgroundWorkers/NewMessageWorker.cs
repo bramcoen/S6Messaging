@@ -7,19 +7,17 @@ namespace Messaging
 {
     public class NewMessageWorker : BackgroundService
     {
-        ConnectionFactory _connectionFactory;
-        IConnection _connection;
-        IModel _channel;
-        ILogger _logger;
-        IMessageStorage _messageStorage;
-        RabbitMQService _rabbitMQService;
-        IConfiguration _configuration;
+        private ConnectionFactory _connectionFactory;
+        private IConnection _connection;
+        private IModel _channel;
+        private readonly ILogger _logger;
+        private readonly IMessageStorage _messageStorage;
+        private readonly IConfiguration _configuration;
 
-        public NewMessageWorker(ILogger<NewMessageWorker> logger, IMessageStorage messageStorage, RabbitMQService rabbitMQService, IConfiguration configuration)
+        public NewMessageWorker(ILogger<NewMessageWorker> logger, IMessageStorage messageStorage, IConfiguration configuration)
         {
             _logger = logger;
             _messageStorage = messageStorage;
-            _rabbitMQService = rabbitMQService;
             _configuration = configuration;
         }
 
@@ -45,10 +43,12 @@ namespace Messaging
         }
         public override Task StartAsync(CancellationToken cancellationToken)
         {
-            _connectionFactory = new ConnectionFactory() { HostName = 
-                _configuration.GetValue<string>("RabbitMQHostname"), 
-                UserName = _configuration.GetValue<string>("RabbitMQUsername"), 
-                Password = _configuration.GetValue<string>("RabbitMQPassword") ,
+            _connectionFactory = new ConnectionFactory()
+            {
+                HostName =
+                _configuration.GetValue<string>("RabbitMQHostname"),
+                UserName = _configuration.GetValue<string>("RabbitMQUsername"),
+                Password = _configuration.GetValue<string>("RabbitMQPassword"),
                 Port = 5672,
                 DispatchConsumersAsync = true
             };
@@ -59,7 +59,7 @@ namespace Messaging
                                      exclusive: false,
                                      autoDelete: false,
                                      arguments: null);
-            _channel.BasicQos(0, 30,false);
+            _channel.BasicQos(0, 30, false);
             _logger.LogInformation($"Queue [message/new] is waiting for messages.");
 
             return base.StartAsync(cancellationToken);
