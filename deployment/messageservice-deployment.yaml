@@ -23,7 +23,7 @@ spec:
         io.kompose.service: messageservice
     spec:
       containers:
-        - image: bramco/brams6userservice
+        - image: bramco/brams6messaging
           name: messageservice
           env:
             - name: RabbitMQHostname
