@@ -14,9 +14,9 @@ namespace MongoDBRepository
         IMongoCollection<User> _usersCollection;
         public UserStorage(IConfiguration configuration)
         {
-            _dbClient = new MongoClient(configuration["MongoDBConnectionString"]);
+            _dbClient = new MongoClient(configuration.GetValue<string>("MongoDBConnectionString"));
             _mongoDatabase = _dbClient.GetDatabase("S6");
-            _usersCollection = _mongoDatabase.GetCollection<User>("User_Users");
+            _usersCollection = _mongoDatabase.GetCollection<User>("Message_Users");
         }
 
         public async Task DeleteUser(string id)
@@ -58,18 +58,25 @@ namespace MongoDBRepository
 
         public async Task<User> RegisterOrUpdateUser(string name, string userId)
         {
-            var user = await GetById(userId);
-            if (user == null)
+            try
             {
-                user = new User(name,userId);
-                await _usersCollection.InsertOneAsync(user);
+                var user = await GetById(userId);
+                if (user == null)
+                {
+                    user = new User(name, userId);
+                    await _usersCollection.InsertOneAsync(user);
+                    return user;
+                }
+
+                var update = Builders<User>.Update.Set(i => i.Name, name);
+                var result = await _usersCollection.UpdateOneAsync(i => i.Id == user.Id, update);
+                user.Name = name;
                 return user;
             }
-
-            var update = Builders<User>.Update.Set(i => i.Name, name);
-            var result = await _usersCollection.UpdateOneAsync(i => i.Id == user.Id, update);
-            user.Name = name;
-            return user;
+            catch(Exception ex)
+            {
+                throw ex;
+            }
         }
     }
 }

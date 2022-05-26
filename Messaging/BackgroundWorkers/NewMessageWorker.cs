@@ -44,8 +44,7 @@ namespace Messaging
         {
             ConnectionFactory _connectionFactory = new ConnectionFactory()
             {
-                HostName =
-                _configuration.GetValue<string>("RabbitMQHostname"),
+                HostName = _configuration.GetValue<string>("RabbitMQHostname"),
                 UserName = _configuration.GetValue<string>("RabbitMQUsername"),
                 Password = _configuration.GetValue<string>("RabbitMQPassword"),
                 Port = 5672,

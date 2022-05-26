@@ -9,7 +9,13 @@ namespace Messaging.Services
 
         public RabbitMQService(IConfiguration configuration)
         {
-            _factory = new ConnectionFactory() { HostName = configuration.GetValue<string>("RabbitMQHostname"), UserName = "RabbitMQUsername", Password = "RabbitMQPassword" };
+            _factory = new ConnectionFactory()
+            {
+                HostName = configuration.GetValue<string>("RabbitMQHostname"),
+                UserName = configuration.GetValue<string>("RabbitMQUsername"),
+                Password = configuration.GetValue<string>("RabbitMQPassword"),
+                Port = 5672
+            };
         }
         public void SendMessage(object obj, string exchange, string routingkey)
         {
