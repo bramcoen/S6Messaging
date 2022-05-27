@@ -118,7 +118,7 @@ jobs:
       run: kubectl create secret generic messagingsecret 
         --from-literal=RabbitMQHostname=${{ secrets.RabbitMQHostname }}
         --from-literal=MongoDBConnectionString=${{ secrets.MongoDBConnectionString }}
-        --from-literal=RabbitMQUsername=${{ secrets.RabbitMQUsername }}
+        --from-literal=RabbitMQUsername='${{ secrets.RabbitMQUsername }}'
         --from-literal=RabbitMQPassword=${{ secrets.RabbitMQPassword }}
    
 
