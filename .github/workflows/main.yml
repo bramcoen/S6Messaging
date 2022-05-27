@@ -115,12 +115,7 @@ jobs:
       continue-on-error: true
       
     - name: Create Secret userservicesecret
-      run: kubectl create secret generic messagingsecret 
-        --from-literal=RabbitMQHostname=${{ secrets.RabbitMQHostname }}
-        --from-literal=MongoDBConnectionString=${{ secrets.MongoDBConnectionString }}
-        --from-literal=RabbitMQUsername='${{ secrets.RabbitMQUsername }}'
-        --from-literal=RabbitMQPassword=${{ secrets.RabbitMQPassword }}
-   
+      run: kubectl create secret generic messagingsecret --from-literal=RabbitMQUsername=${{ secrets.RabbitMQUsername }} --from-literal=RabbitMQHostname=${{ secrets.RabbitMQHostname }} --from-literal=MongoDBConnectionString=${{ secrets.MongoDBConnectionString }} --from-literal=RabbitMQPassword=${{ secrets.RabbitMQPassword }}  
 
 #Deploy app
     - name: Deploy to DigitalOcean Kubernetes
