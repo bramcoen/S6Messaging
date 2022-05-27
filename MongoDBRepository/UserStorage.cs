@@ -56,14 +56,14 @@ namespace MongoDBRepository
             return await _usersCollection.Find(i => i.Name == name).FirstOrDefaultAsync();
         }
 
-        public async Task<User> RegisterOrUpdateUser(string name, string userId)
+        public async Task<User> RegisterOrUpdateUser(string name, string userId, string email)
         {
             try
             {
                 var user = await GetById(userId);
                 if (user == null)
                 {
-                    user = new User(name, userId);
+                    user = new User(name, userId) { Email = email};
                     await _usersCollection.InsertOneAsync(user);
                     return user;
                 }

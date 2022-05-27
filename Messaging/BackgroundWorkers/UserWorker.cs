@@ -29,7 +29,7 @@ namespace Messaging
                 {
                     var body = ea.Body.ToArray();
                     var user = System.Text.Json.JsonSerializer.Deserialize<User>(body);
-                    if (user != null) await _userStorage.RegisterOrUpdateUser(user.Name, user.Id);
+                    if (user != null) await _userStorage.RegisterOrUpdateUser(user.Name, user.Id, user.Email);
                     _channel.BasicAck(deliveryTag: ea.DeliveryTag, multiple: false);
                 };
 
