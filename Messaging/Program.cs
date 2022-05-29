@@ -18,7 +18,7 @@ builder.Services.AddControllers();
 
 var app = builder.Build();
 app.UseRouting();
-app.UseCors();
+app.UseCors("default");
 app.UseEndpoints(endpoints =>
 {
     endpoints.MapMetrics();
