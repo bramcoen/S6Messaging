@@ -1,6 +1,7 @@
 using Messaging;
 using Messaging.Services;
 using MongoDBRepository;
+using Prometheus;
 using StorageInterfaces;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -12,6 +13,11 @@ builder.Services.AddSingleton<RabbitMQService>();
 builder.Services.AddControllers();
 
 var app = builder.Build();
+app.UseRouting();
+app.UseEndpoints(endpoints =>
+{
+    endpoints.MapMetrics();
+});
 app.UseHttpsRedirection();
 app.MapControllers();
 
