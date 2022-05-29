@@ -42,7 +42,7 @@ namespace WebApplication2.Controllers
             if (token == null) throw new Exception("Call can't be done while the user is not logged in.");
 
             var sender = await _userStorage.GetByEmail(payload.Email);
-            return await _messageStorage.SaveMessageAsync(new Message() { Text = content, SenderId = sender.Id });
+            return await _messageStorage.SaveMessageAsync(new Message() { Text = text, SenderId = sender.Id });
         }
     }
 }
