@@ -35,14 +35,15 @@ namespace WebApplication2.Controllers
             return await _messageStorage.GetAllMessages(user.Id, amount, page);
         }
         [HttpPost]
-        public async Task<Message> SendMessage(string token, [FromBody] string text)
+        public async Task<Message> SendMessage(string token, [FromBody] Message msg)
         {
             Payload? payload = await GoogleJsonWebSignature.ValidateAsync(token, _validationSettings);
 
             if (token == null) throw new Exception("Call can't be done while the user is not logged in.");
 
             var sender = await _userStorage.GetByEmail(payload.Email);
-            return await _messageStorage.SaveMessageAsync(new Message() { Text = text, SenderId = sender.Id });
+            msg.SenderId = sender.Id;
+            return await _messageStorage.SaveMessageAsync(msg);
         }
     }
 }
