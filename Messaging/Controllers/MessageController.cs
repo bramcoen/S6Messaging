@@ -4,6 +4,7 @@ using Microsoft.AspNetCore.Mvc;
 using System;
 using Google.Apis.Auth;
 using static Google.Apis.Auth.GoogleJsonWebSignature;
+using Microsoft.AspNetCore.Cors;
 
 namespace WebApplication2.Controllers
 {
@@ -34,7 +35,7 @@ namespace WebApplication2.Controllers
             return await _messageStorage.GetAllMessages(user.Id, amount, page);
         }
         [HttpPost]
-        public async Task<Message> SendMessage(string token, [FromBody] string content)
+        public async Task<Message> SendMessage(string token, [FromBody] string text)
         {
             Payload? payload = await GoogleJsonWebSignature.ValidateAsync(token, _validationSettings);
 
