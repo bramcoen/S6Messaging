@@ -35,7 +35,7 @@ namespace WebApplication2.Controllers
             return await _messageStorage.GetAllMessages(user.Id, amount, page);
         }
         [HttpPost("send")]
-        public async Task<Message> SendMessage(string token, [FromBody] Message msg)
+        public async Task<Message> SendMessage([FromHeader]string token, [FromBody] Message msg)
         {
             Payload? payload = await GoogleJsonWebSignature.ValidateAsync(token, _validationSettings);
 
