@@ -12,8 +12,8 @@ namespace Messaging
         {
 
         }
-        public string Id { get; set; }
-        public string SenderId { get; set; }
+        public string? Id { get; set; }
+        public string? SenderId { get; set; }
         public string Text { get; set; }
         public DateTime CreationDate { get; set; } = DateTime.Now;
     }
