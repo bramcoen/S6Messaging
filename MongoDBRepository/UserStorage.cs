@@ -50,6 +50,10 @@ namespace MongoDBRepository
         {
             return await _usersCollection.Find(i => i.Id == id).FirstOrDefaultAsync();
         }
+        public async Task<User> GetByEmail(string email)
+        {
+            return await _usersCollection.Find(i => i.Email == email).FirstOrDefaultAsync();
+        }
 
         public async Task<User> GetByUsername(string name)
         {

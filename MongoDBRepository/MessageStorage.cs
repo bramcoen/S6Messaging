@@ -26,9 +26,11 @@ namespace MongoDBRepository
             throw new NotImplementedException();
         }
 
-        public Task<Message> SaveMessageAsync(Message message)
+        public async Task<Message> SaveMessageAsync(Message message)
         {
-            throw new NotImplementedException();
+            message.Id = Guid.NewGuid().ToString();
+            await _messageCollection.InsertOneAsync(message);
+            return message;
         }
     }
 }
