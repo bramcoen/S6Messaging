@@ -9,7 +9,7 @@ builder.Services.AddCors(options => {
     options.AddPolicy("default", build => build.WithOrigins("*").AllowAnyMethod().AllowAnyHeader());
     //Check should be handled by the gateway
 });
-builder.Services.AddHostedService<NewMessageWorker>();
+//builder.Services.AddHostedService<NewMessageWorker>();
 builder.Services.AddHostedService<UserWorker>();
 builder.Services.AddSingleton<IUserStorage, UserStorage>();
 builder.Services.AddSingleton<IMessageStorage, MessageStorage>();
