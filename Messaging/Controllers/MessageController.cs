@@ -32,6 +32,10 @@ namespace WebApplication2.Controllers
         public async Task<IEnumerable<Message>> GetAsync(string username, int amount = 100, int page = 1)
         {
             var user = await _userStorage.GetByUsername(username);
+            if(user == null)
+            {
+                return new List<Message>();
+            }
             return await _messageStorage.GetAllMessages(user.Id, amount, page);
         }
         [HttpPost("send")]
