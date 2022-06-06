@@ -1,5 +1,4 @@
-﻿using StorageInterfaces;
-using Messaging.Services;
+﻿/*using StorageInterfaces;
 using RabbitMQ.Client;
 using RabbitMQ.Client.Events;
 
@@ -57,6 +56,9 @@ namespace Messaging
                                      exclusive: false,
                                      autoDelete: false,
                                      arguments: null);
+            _channel.QueueBind(queue: "message/user",
+                    exchange: "message",
+                    routingKey: "edit");
             _channel.BasicQos(0, 30, false);
             _logger.LogInformation($"Queue [message/new] is waiting for messages.");
 
@@ -64,3 +66,4 @@ namespace Messaging
         }
     }
 }
+*/

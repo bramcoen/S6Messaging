@@ -56,6 +56,10 @@ namespace Messaging
                                      exclusive: false,
                                      autoDelete: false,
                                      arguments: null);
+
+            _channel.QueueBind(queue: "message/user",
+                     exchange: "user",
+                     routingKey: "edit");
             _channel.BasicQos(0, 30, false);
             _logger.LogInformation($"Queue [hello] is waiting for messages.");
 
