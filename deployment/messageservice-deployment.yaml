@@ -55,6 +55,6 @@ spec:
           ports:
             - containerPort: 80
           resources: {}
-      hostname: userservice
+      hostname: messageservice
       restartPolicy: Always
 status: {}
